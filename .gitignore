@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+cloudflared
+cloudflared.tgz
+bookings.json
+.env
+.DS_Store

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VIBUS — VIP Перевозки</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="badge">PREMIUM КОМФОРТ • ДО 8 МЕСТ</div>
+            <h1>🚐 VIBUS — VIP Перевозки</h1>
+            <p>Украина 🇺🇦 ↔ Болгария 🇧🇬 • Ежедневно</p>
+        </header>
+
+        <!-- Переключатель вкладок -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'ticket')">🎫 Билет</button>
+            <button class="tab-btn" onclick="switchTab(event, 'parcel')">📦 Посылка</button>
+            <button class="tab-btn" onclick="switchTab(event, 'fleet')">🚐 Авто и инфо</button>
+        </div>
+
+        <!-- Вкладка 1: Бронь билета -->
+        <form id="ticket-form" class="card tab-content active" onsubmit="submitOrder(event, 'ticket')">
+            <div class="row">
+                <div class="col">
+                    <label>Откуда</label>
+                    <select id="t-from" onchange="checkSeats()" required>
+                        <optgroup label="🇧🇬 Болгария">
+                            <option value="Бургас 🇧🇬">Бургас 🇧🇬</option>
+                            <option value="Сарафово 🇧🇬">Сарафово 🇧🇬</option>
+                            <option value="Поморие 🇧🇬">Поморие 🇧🇬</option>
+                            <option value="Равда 🇧🇬">Равда 🇧🇬</option>
+                            <option value="Несебр 🇧🇬">Несебр 🇧🇬</option>
+                            <option value="Солнечный Берег 🇧🇬">Солнечный Берег 🇧🇬</option>
+                            <option value="Святой Влас 🇧🇬">Святой Влас 🇧🇬</option>
+                            <option value="Обзор 🇧🇬">Обзор 🇧🇬</option>
+                            <option value="Бяла 🇧🇬">Бяла 🇧🇬</option>
+                            <option value="Варна 🇧🇬" selected>Варна 🇧🇬</option>
+                            <option value="Золотые Пески 🇧🇬">Золотые Пески 🇧🇬</option>
+                            <option value="Кранево 🇧🇬">Кранево 🇧🇬</option>
+                        </optgroup>
+                        <optgroup label="🇺🇦 Украина / 🇷🇴 Румыния">
+                            <option value="Одесса 🇺🇦">Одесса 🇺🇦</option>
+                            <option value="Татарбунары 🇺🇦">Татарбунары 🇺🇦</option>
+                            <option value="Измаил 🇺🇦">Измаил 🇺🇦</option>
+                            <option value="Исакча 🇷🇴">Исакча 🇷🇴</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="col">
+                    <label>Куда</label>
+                    <select id="t-to" onchange="checkSeats()" required>
+                        <optgroup label="🇺🇦 Украина / 🇷🇴 Румыния">
+                            <option value="Одесса 🇺🇦" selected>Одесса 🇺🇦</option>
+                            <option value="Татарбунары 🇺🇦">Татарбунары 🇺🇦</option>
+                            <option value="Измаил 🇺🇦">Измаил 🇺🇦</option>
+                            <option value="Исакча 🇷🇴">Исакча 🇷🇴</option>
+                        </optgroup>
+                        <optgroup label="🇧🇬 Болгария">
+                            <option value="Бургас 🇧🇬">Бургас 🇧🇬</option>
+                            <option value="Сарафово 🇧🇬">Сарафово 🇧🇬</option>
+                            <option value="Поморие 🇧🇬">Поморие 🇧🇬</option>
+                            <option value="Равда 🇧🇬">Равда 🇧🇬</option>
+                            <option value="Несебр 🇧🇬">Несебр 🇧🇬</option>
+                            <option value="Солнечный Берег 🇧🇬">Солнечный Берег 🇧🇬</option>
+                            <option value="Святой Влас 🇧🇬">Святой Влас 🇧🇬</option>
+                            <option value="Обзор 🇧🇬">Обзор 🇧🇬</option>
+                            <option value="Бяла 🇧🇬">Бяла 🇧🇬</option>
+                            <option value="Варна 🇧🇬">Варна 🇧🇬</option>
+                            <option value="Золотые Пески 🇧🇬">Золотые Пески 🇧🇬</option>
+                            <option value="Кранево 🇧🇬">Кранево 🇧🇬</option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label>Дата выезда</label>
+                    <input type="date" id="t-date" onchange="checkSeats()" required>
+                </div>
+                <div class="col">
+                    <label>Пассажиров</label>
+                    <select id="t-seats">
+                        <option value="1">1 место</option>
+                        <option value="2">2 места</option>
+                        <option value="3">3 места</option>
+                        <option value="4">4 места</option>
+                        <option value="5">5 мест</option>
+                        <option value="6">6 мест</option>
+                        <option value="7">7 мест</option>
+                        <option value="8">8 мест</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Индикатор наличия мест с маршрутом -->
+            <div id="seats-status" class="seats-status available">
+                🟢 Варна 🇧🇬 → Одесса 🇺🇦: свободно 8 из 8
+            </div>
+
+            <label>Адрес посадки / высадки (с адреса на адрес)</label>
+            <input type="text" id="t-address" placeholder="Улица, дом или ориентир" required>
+
+            <label>Ваше имя</label>
+            <input type="text" id="t-name" placeholder="Например: Дмитрий" required>
+
+            <label>Телефон (Viber / WhatsApp / Telegram)</label>
+            <input type="tel" id="t-phone" placeholder="+359 ... или +380 ..." required>
+
+            <button type="submit" id="t-submit-btn" class="submit-btn">Забронировать место</button>
+        </form>
+
+        <!-- Вкладка 2: Посылка -->
+        <form id="parcel-form" class="card tab-content" onsubmit="submitOrder(event, 'parcel')">
+            <div class="row">
+                <div class="col">
+                    <label>Откуда</label>
+                    <select id="p-from" required>
+                        <optgroup label="🇧🇬 Болгария">
+                            <option value="Бургас 🇧🇬">Бургас 🇧🇬</option>
+                            <option value="Сарафово 🇧🇬">Сарафово 🇧🇬</option>
+                            <option value="Поморие 🇧🇬">Поморие 🇧🇬</option>
+                            <option value="Равда 🇧🇬">Равда 🇧🇬</option>
+                            <option value="Несебр 🇧🇬">Несебр 🇧🇬</option>
+                            <option value="Солнечный Берег 🇧🇬">Солнечный Берег 🇧🇬</option>
+                            <option value="Святой Влас 🇧🇬">Святой Влас 🇧🇬</option>
+                            <option value="Обзор 🇧🇬">Обзор 🇧🇬</option>
+                            <option value="Бяла 🇧🇬">Бяла 🇧🇬</option>
+                            <option value="Варна 🇧🇬" selected>Варна 🇧🇬</option>
+                            <option value="Золотые Пески 🇧🇬">Золотые Пески 🇧🇬</option>
+                            <option value="Кранево 🇧🇬">Кранево 🇧🇬</option>
+                        </optgroup>
+                        <optgroup label="🇺🇦 Украина / 🇷🇴 Румыния">
+                            <option value="Одесса 🇺🇦">Одесса 🇺🇦</option>
+                            <option value="Татарбунары 🇺🇦">Татарбунары 🇺🇦</option>
+                            <option value="Измаил 🇺🇦">Измаил 🇺🇦</option>
+                            <option value="Исакча 🇷🇴">Исакча 🇷🇴</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="col">
+                    <label>Куда</label>
+                    <select id="p-to" required>
+                        <optgroup label="🇺🇦 Украина / 🇷🇴 Румыния">
+                            <option value="Одесса 🇺🇦" selected>Одесса 🇺🇦</option>
+                            <option value="Татарбунары 🇺🇦">Татарбунары 🇺🇦</option>
+                            <option value="Измаил 🇺🇦">Измаил 🇺🇦</option>
+                            <option value="Исакча 🇷🇴">Исакча 🇷🇴</option>
+                        </optgroup>
+                        <optgroup label="🇧🇬 Болгария">
+                            <option value="Бургас 🇧🇬">Бургас 🇧🇬</option>
+                            <option value="Сарафово 🇧🇬">Сарафово 🇧🇬</option>
+                            <option value="Поморие 🇧🇬">Поморие 🇧🇬</option>
+                            <option value="Равда 🇧🇬">Равда 🇧🇬</option>
+                            <option value="Несебр 🇧🇬">Несебр 🇧🇬</option>
+                            <option value="Солнечный Берег 🇧🇬">Солнечный Берег 🇧🇬</option>
+                            <option value="Святой Влас 🇧🇬">Святой Влас 🇧🇬</option>
+                            <option value="Обзор 🇧🇬">Обзор 🇧🇬</option>
+                            <option value="Бяла 🇧🇬">Бяла 🇧🇬</option>
+                            <option value="Варна 🇧🇬">Варна 🇧🇬</option>
+                            <option value="Золотые Пески 🇧🇬">Золотые Пески 🇧🇬</option>
+                            <option value="Кранево 🇧🇬">Кранево 🇧🇬</option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label>Дата отправки</label>
+                    <input type="date" id="p-date" required>
+                </div>
+                <div class="col">
+                    <label>Способ / Служба</label>
+                    <select id="p-service">
+                        <option value="Из рук в руки">Из рук в руки</option>
+                        <option value="Новая Почта">Новая Почта</option>
+                        <option value="Meest">Meest</option>
+                        <option value="Speedy">Speedy</option>
+                        <option value="Econt">Econt</option>
+                    </select>
+                </div>
+            </div>
+
+            <label>Что передаем и примерный вес</label>
+            <input type="text" id="p-details" placeholder="Документы / чемодан 15 кг / коробка" required>
+
+            <label>Ваше имя</label>
+            <input type="text" id="p-name" placeholder="Имя отправителя" required>
+
+            <label>Телефон для связи</label>
+            <input type="tel" id="p-phone" placeholder="+359 ... или +380 ..." required>
+
+            <button type="submit" class="submit-btn">Оформить передачу посылки</button>
+        </form>
+
+        <!-- Вкладка 3: Автопарк и условия -->
+        <div id="fleet-tab" class="card tab-content">
+            <img src="/banner.jpg" alt="VIBUS Mercedes Sprinter" class="banner-img" onerror="this.style.display='none'">
+
+            <div class="info-block">
+                <h3>🚐 Mercedes Sprinter • Premium (до 8 мест)</h3>
+                <div class="tags">
+                    <span>💺 Реклайнер сиденья</span>
+                    <span>📶 Wi-Fi • USB</span>
+                    <span>❄️ Кондиционер</span>
+                    <span>☕ Вода • Кофе</span>
+                    <span>🛂 Помощь на границе</span>
+                    <span>🚪 С адреса на адрес</span>
+                </div>
+            </div>
+
+            <div class="info-block">
+                <h3>📍 Регулярный маршрут</h3>
+                <p><b>Украина / Румыния:</b> Одесса • Татарбунары • Измаил • Исакча</p>
+                <p style="margin-top: 6px;"><b>Болгария:</b> Кранево • Золотые Пески • Варна • Бяла • Обзор • Святой Влас • Солнечный Берег • Несебр • Равда • Поморие • Сарафово • Бургас</p>
+            </div>
+
+            <div class="info-block contact-box">
+                <h3>📞 Прямая связь с диспетчером</h3>
+                <p><b>Виталий:</b> <a href="tel:+380638025435">+380 63 802 54 35</a></p>
+                <p class="sub-hint">Viber • WhatsApp • Telegram</p>
+            </div>
+        </div>
+
+        <!-- Экран успеха -->
+        <div id="success-screen" class="card hidden">
+            <h2>✅ Заявка принята!</h2>
+            <p>Диспетчер Виталий уже получил ваши данные и свяжется с вами в ближайшее время.</p>
+            <button class="submit-btn" onclick="resetForms()">Отправить ещё одну заявку</button>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        const today = new Date().toISOString().split('T')[0];
+        ['t-date', 'p-date'].forEach(id => {
+            const el = document.getElementById(id);
+            el.value = today;
+            el.min = today;
+        });
+
+        const user = tg.initDataUnsafe?.user;
+        if (user && user.first_name) {
+            document.getElementById('t-name').value = user.first_name;
+            document.getElementById('p-name').value = user.first_name;
+        }
+
+        async function checkSeats() {
+            const fromCity = document.getElementById('t-from').value;
+            const toCity = document.getElementById('t-to').value;
+            const dateVal = document.getElementById('t-date').value;
+            if (!dateVal) return;
+
+            const routeLabel = `${fromCity} → ${toCity}`;
+
+            try {
+                const params = new URLSearchParams({
+                    from_city: fromCity,
+                    to_city: toCity,
+                    date: dateVal
+                });
+                const res = await fetch(`/api/seats?${params.toString()}`);
+                if (!res.ok) return;
+                const data = await res.json();
+
+                const statusBox = document.getElementById('seats-status');
+                const submitBtn = document.getElementById('t-submit-btn');
+                const seatsSelect = document.getElementById('t-seats');
+
+                Array.from(seatsSelect.options).forEach(opt => {
+                    opt.disabled = data.remaining > 0 && parseInt(opt.value) > data.remaining;
+                });
+                if (data.remaining > 0 && parseInt(seatsSelect.value) > data.remaining) {
+                    seatsSelect.value = String(data.remaining);
+                }
+
+                if (data.remaining <= 0) {
+                    statusBox.className = 'seats-status sold-out';
+                    statusBox.innerText = `🔴 ${routeLabel}: на эту дату мест нет`;
+                    submitBtn.disabled = true;
+                    submitBtn.innerText = 'Мест на эту дату нет';
+                } else if (data.remaining <= 3) {
+                    statusBox.className = 'seats-status low';
+                    statusBox.innerText = `🟠 ${routeLabel}: осталось ${data.remaining} из ${data.max}`;
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Забронировать место';
+                } else {
+                    statusBox.className = 'seats-status available';
+                    statusBox.innerText = `🟢 ${routeLabel}: свободно ${data.remaining} из ${data.max}`;
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Забронировать место';
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        checkSeats();
+
+        function switchTab(event, tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById('success-screen').classList.add('hidden');
+
+            event.currentTarget.classList.add('active');
+            if (tabName === 'ticket') {
+                document.getElementById('ticket-form').classList.add('active');
+                checkSeats();
+            }
+            if (tabName === 'parcel') document.getElementById('parcel-form').classList.add('active');
+            if (tabName === 'fleet') document.getElementById('fleet-tab').classList.add('active');
+        }
+
+        async function submitOrder(event, type) {
+            event.preventDefault();
+            const btn = event.target.querySelector('button');
+            btn.disabled = true;
+            btn.innerText = "Отправка...";
+
+            const prefix = type === 'ticket' ? 't' : 'p';
+            const fromCity = document.getElementById(`${prefix}-from`).value;
+            const toCity = document.getElementById(`${prefix}-to`).value;
+            const seatsCount = type === 'ticket' ? parseInt(document.getElementById('t-seats').value) : 0;
+
+            const detailsText = type === 'ticket'
+                ? `${seatsCount} мест(а) | Адрес: ${document.getElementById('t-address').value}`
+                : `[${document.getElementById('p-service').value}] ${document.getElementById('p-details').value}`;
+
+            const payload = {
+                order_type: type,
+                from_city: fromCity,
+                to_city: toCity,
+                date: document.getElementById(`${prefix}-date`).value,
+                seats: seatsCount,
+                details: detailsText,
+                name: document.getElementById(`${prefix}-name`).value,
+                phone: document.getElementById(`${prefix}-phone`).value,
+                tg_username: user?.username ? `@${user.username}` : "Скрыт"
+            };
+
+            try {
+                const response = await fetch('/api/order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+                    document.getElementById('success-screen').classList.remove('hidden');
+                    if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                } else {
+                    const errData = await response.json();
+                    alert(errData.error || "Мест на эту дату больше нет.");
+                    checkSeats();
+                }
+            } catch (err) {
+                alert("Ошибка соединения. Попробуйте ещё раз.");
+            } finally {
+                if (type === 'parcel') {
+                    btn.disabled = false;
+                    btn.innerText = "Оформить передачу посылки";
+                } else {
+                    checkSeats();
+                }
+            }
+        }
+
+        function resetForms() {
+            document.getElementById('success-screen').classList.add('hidden');
+            document.querySelectorAll('.tab-btn')[0].click();
+        }
+    </script>
+</body>
+</html>
